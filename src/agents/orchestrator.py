@@ -9,7 +9,8 @@ class AgentState(TypedDict):
     report: str
 
 class Orchestrator:
-    def __init__(self):        self.researcher = ResearcherAgent()
+    def __init__(self):
+        self.researcher = ResearcherAgent()
         self.synthesis = SynthesisAgent()
         self.workflow = self._create_workflow()
 
@@ -30,7 +31,7 @@ class Orchestrator:
         return {"research_data": results}
 
     def _synthesize_step(self, state: AgentState):
-        report = self.synthesis.synthesize(state['research_data'])
+        report = self.synthesis.synthesize(state['query'], state['research_data'])
         return {"report": report}
 
     def run(self, query: str):
