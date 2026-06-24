@@ -1,18 +1,23 @@
-import requests
+from duckduckgo_search import DDGS
 from typing import List, Dict
 
 def duckduckgo_search(query: str, max_results: int = 5) -> List[Dict]:
     """
-    Perform a web search using DuckDuckGo.
-    This is a simplified implementation.
+    Perform a real web search using DuckDuckGo.
+    Free and requires no API key.
     """
-    # In a real production environment, we'd use a robust search API.
-    # For now, we'll simulate results or use a lightweight scraper.
     print(f"Searching DuckDuckGo for: {query}")
-    return [
-        {"title": f"Result for {query}", "url": "https://example.com", "content": "Snippet of search result content."}
-    ]
+    results = []
+    with DDGS() as ddgs:
+        ddgs_gen = ddgs.text(query, max_results=max_results)
+        for r in ddgs_gen:
+            results.append({
+                "title": r.get("title"),
+                "url": r.get("href"),
+                "content": r.get("body")
+            })
+    return results
 
 def filter_results(results: List[Dict]) -> List[Dict]:
-    """Filter and rank results based on relevance."""
-    return sorted(results, key=lambda x: len(x['content']), reverse=True)
+    """Filter and rank results based on relevance (simple length-based ranking for now)."""
+    return sorted(results, key=lambda x: len(x.get('content', '')), reverse=True)
